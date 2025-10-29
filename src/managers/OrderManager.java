@@ -19,7 +19,7 @@ public class OrderManager {
     public void placeOrder(Order order) {
         orderQueue.offer(order); // add to queue
         System.out.println("Order placed for " + order.getCustomer().getName() + ". Total: $" + order.totalPrice());
-        processOrders(); // automatically try to assign a driver
+        processOrders(); // try to assign a driver
     }
 
     // Process orders by FIFO
