@@ -7,8 +7,8 @@ import deliveryApp.users.Driver;
 import java.util.*;
 
 public class OrderManager {
-    private Queue<Order> orderQueue; // FIFO queue
-    private DriverManager driverManager;
+    private final Queue<Order> orderQueue; // FIFO queue
+    private final DriverManager driverManager;
 
     public OrderManager(DriverManager driverManager) {
         this.orderQueue = new LinkedList<>();
