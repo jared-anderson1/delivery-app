@@ -1,45 +1,45 @@
 package deliveryApp.users;
 
-import deliveryApp.users.Driver;
 import deliveryApp.orders.Order;
 import java.util.*;
+
 public class Admin extends User {
-    public Admin(String name) {
-        super(name);
+    private PriorityQueue<Driver> availableDrivers;
+    private Queue<Order> orders;
+
+    public Admin(String name, String password) {
+        super(name, password);
+        availableDrivers = new PriorityQueue<>();
+        orders = new LinkedList<>();
     }
 
-    public void viewDrivers(List<Driver> drivers) {
-        System.out.println("--All Drivers--");
-        for (Driver d : drivers) {
-            System.out.println(d);
-        }
+    public void addDriver(Driver driver) {
+        availableDrivers.add(driver);
     }
 
-    public void viewOrders(List<Order> orders) {
-        System.out.println("--All Orders--");
-        for (Order o : orders) {
-            System.out.println(o);
-        }
-    }
-
-    public void assignDriver(List<Driver> drivers, Order order) {
-        Driver bestDriver = null;
-        double highestRating = -1;
-
-        for(Driver d : drivers) {
-            if (d.isAvailable() && d.getAverageRating() > highestRating) {
-                bestDriver = d;
-                highestRating = d.getAverageRating();
-            }
-        }
-
+    // Assigns a driver to an order
+    public void assignOrder(Order order) {
+        Driver bestDriver = availableDrivers.poll();
         if (bestDriver != null) {
-            order.assignDriver(bestDriver);
-            System.out.println(bestDriver.getName() + " assigned to order");
+            bestDriver.setAvailable(false);
+            order.updateStatus("Accepted");
+            System.out.println("Order assigned to: " + bestDriver.getName());
         } else {
-            System.out.println("Searching for drivers");
+            System.out.println("No available drivers right now.");
         }
-
+        orders.add(order);
     }
 
+    public void viewOrders() {
+        if (orders.isEmpty()) System.out.println("No orders found.");
+        else orders.forEach(System.out::println);
+    }
+
+    public void viewDrivers() {
+        if (availableDrivers.isEmpty()) {
+            System.out.println("No available drivers.");
+        } else {
+            availableDrivers.forEach(System.out::println);
+        }
+    }
 }

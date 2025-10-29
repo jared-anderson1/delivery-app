@@ -3,7 +3,7 @@ package deliveryApp.users;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
+/*
  * Represents a delivery driver in the system.
  * Each driver can receive up to 10 ratings, and their average rating is used
  * for assigning new orders.
@@ -14,8 +14,8 @@ public class Driver extends User {
     private final Queue<Integer> ratings;
     private double averageRating;
 
-    public Driver(String name) {
-        super(name);
+    public Driver(String name, String password) {
+        super(name, password);
         this.available = true;
         this.ratings = new LinkedList<>();
         this.averageRating = 0.0;
@@ -35,7 +35,7 @@ public class Driver extends User {
         return averageRating;
     }
 
-    /**
+    /*
      * Adds a new rating (1–5). Only the 10 most recent ratings are stored.
      */
     public void addRating(int rating) {
@@ -63,7 +63,7 @@ public class Driver extends User {
         averageRating = sum / ratings.size();
     }
 
-    // --- String Output ---
+
     @Override
     public String toString() {
         String status = available ? "Available" : "Assigned";
