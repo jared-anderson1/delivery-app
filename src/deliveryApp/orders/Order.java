@@ -3,6 +3,7 @@ package deliveryApp.orders;
 import deliveryApp.users.Customer;
 import deliveryApp.users.Driver;
 import deliveryApp.menu.MenuItem;
+import deliveryApp.orders.OrderStatus;
 import java.util.List;
 
 public class Order {
