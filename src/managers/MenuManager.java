@@ -38,12 +38,12 @@ public class MenuManager {
             System.out.println("No items in the menu.");
         } else {
             for (MenuItem item : menuMap.values()) {
-                System.out.println(item); // preserves original name
+                System.out.println(item);
             }
         }
     }
 
-    // Return all menu items as a list
+
     public List<MenuItem> getMenuList() {
         return new ArrayList<>(menuMap.values());
     }
@@ -51,7 +51,7 @@ public class MenuManager {
     // Example loading menu
     private void loadMenu() {
         addItem(new MenuItem("Hamburger", 5.99));
-        addItem(new MenuItem("Fries", 2.49));
+        addItem(new MenuItem("Fries", 3.00));
         addItem(new MenuItem("Drink", 1.50));
     }
 }
