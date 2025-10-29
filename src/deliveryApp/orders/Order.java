@@ -9,20 +9,20 @@ public class Order {
     private Customer customer;
     private Driver driver;
     private List<MenuItem> items;
-    private String status;
+    private OrderStatus status;
 
     public Order(Customer customer, List<MenuItem> items, Driver driver) {
         this.customer = customer;
         this.items = items;
         this.driver = driver;
-        this.status = "Placed";
+        this.status = OrderStatus.PLACED;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
@@ -34,15 +34,15 @@ public class Order {
         return driver;
     }
 
-    public void assignDriver(Driver driver) {
+    public void assignDriver( Driver driver) {
         this.driver = driver;
-        this.status = "in progress";
+        this.status = OrderStatus.ACCEPTED;
         driver.setAvailable(false);
     }
 
-    public void updateStatus(String newStatus) {
+    public void updateStatus(OrderStatus newStatus) {
         this.status = newStatus;
-        if(newStatus.equalsIgnoreCase("Delivered") && driver != null) {
+        if(newStatus == OrderStatus.DELIVERED && driver != null) {
             driver.setAvailable(true);
         }
     }
@@ -58,8 +58,10 @@ public class Order {
     @Override
     public String toString() {
         String driverName = (driver != null) ? driver.getName() : "Assigning a driver";
-        return "Customer: " + customer.getName() +"\nDriver: " + driverName +
-                "\nStatus: " + status + "\nTotal: $" + String.format("$2f", totalPrice());
+        return "Customer: " + customer.getName() +
+                "\nDriver: " + driverName +
+                "\nStatus: " + status +
+                "\nTotal: $" + String.format("$2f", totalPrice());
     }
 
 }
