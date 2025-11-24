@@ -1,45 +1,82 @@
 package deliveryApp.users;
 
+import deliveryApp.managers.DriverManager;
+import deliveryApp.managers.MenuManager;
+import deliveryApp.managers.OrderManager;
+import deliveryApp.managers.UserManager;
 import deliveryApp.orders.Order;
-import java.util.*;
 
+import java.util.Optional;
+
+/**
+ * Admin class for performing manual operations on the system.
+ * It delegates the actual work to the respective manager classes.
+ */
 public class Admin extends User {
-    private PriorityQueue<Driver> availableDrivers;
-    private Queue<Order> orders;
 
-    public Admin(String name, String password) {
+    private final UserManager userManager;
+    private final DriverManager driverManager;
+    private final OrderManager orderManager;
+    private final MenuManager menuManager;
+
+    public Admin(String name, String password, UserManager userManager, DriverManager driverManager, OrderManager orderManager, MenuManager menuManager) {
         super(name, password);
-        availableDrivers = new PriorityQueue<>();
-        orders = new LinkedList<>();
+        this.userManager = userManager;
+        this.driverManager = driverManager;
+        this.orderManager = orderManager;
+        this.menuManager = menuManager;
+
+        // The admin should also be in the user manager
+        userManager.addUser(this);
     }
 
-    public void addDriver(Driver driver) {
-        availableDrivers.add(driver);
-    }
+    // --- Manual User Operations ---
 
-    // Assigns a driver to an order
-    public void assignOrder(Order order) {
-        Driver bestDriver = availableDrivers.poll();
-        if (bestDriver != null) {
-            bestDriver.setAvailable(false);
-            order.updateStatus("Accepted");
-            System.out.println("Order assigned to: " + bestDriver.getName());
+    public void suspendUser(String username) {
+        Optional<User> userOpt = userManager.findUser(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setSuspended(true);
+            userManager.updateUser(user); // Save the change
+            System.out.println("User '" + username + "' has been suspended.");
         } else {
-            System.out.println("No available drivers right now.");
+            System.out.println("User '" + username + "' not found.");
         }
-        orders.add(order);
     }
 
-    public void viewOrders() {
-        if (orders.isEmpty()) System.out.println("No orders found.");
-        else orders.forEach(System.out::println);
-    }
-
-    public void viewDrivers() {
-        if (availableDrivers.isEmpty()) {
-            System.out.println("No available drivers.");
+    public void resumeUser(String username) {
+        Optional<User> userOpt = userManager.findUser(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setSuspended(false);
+            userManager.updateUser(user); // Save the change
+            System.out.println("User '" + username + "' has been resumed.");
         } else {
-            availableDrivers.forEach(System.out::println);
+            System.out.println("User '" + username + "' not found.");
         }
+    }
+
+    public void viewAllUsers() {
+        System.out.println("All Users:");
+        userManager.getAllUsers().forEach(System.out::println);
+    }
+
+    // --- Manual Driver and Order Operations (using placeholder managers) ---
+
+    public void assignOrderToDriver(Order order, Driver driver) {
+        // This would be implemented using OrderManager and DriverManager
+        System.out.println("Assigning order to driver (not yet implemented).");
+    }
+
+    public void viewAvailableDrivers() {
+        System.out.println("Available Drivers:");
+        // driverManager.getAvailableDrivers().forEach(System.out::println);
+        System.out.println("(Not yet implemented)");
+    }
+
+    public void viewAllOrders() {
+        System.out.println("All Orders:");
+        // orderManager.getAllOrders().forEach(System.out::println);
+        System.out.println("(Not yet implemented)");
     }
 }
