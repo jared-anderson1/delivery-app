@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public abstract class User {
+public class User {
     protected String name;
     protected String password;
 
