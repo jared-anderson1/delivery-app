@@ -1,43 +1,20 @@
 package deliveryApp.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Represents a single menu item with a name and price.
+ */
 public class MenuItem {
-    private String name;
-    private double price;
 
-    private static final List<MenuItem> menuItems = new ArrayList<>();
+    private final String name;
+    private final double price;
 
-    static {
-        menuItems.add(new MenuItem("Pizza", 12.99));
-        menuItems.add(new MenuItem("Burger", 8.99));
-        menuItems.add(new MenuItem("Salad", 6.99));
+    public MenuItem(String n, double p) {
+        name = n;
+        price = p;
     }
 
-    public MenuItem(String name, double price) {
-        this.name = name;
-        this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public static List<MenuItem> getMenuItems() {
-        return menuItems;
-    }
-
-    public static void displayMenu() {
-        System.out.println("Menu:");
-        for (int i = 0; i < menuItems.size(); i++) {
-            System.out.println((i + 1) + ". " + menuItems.get(i));
-        }
-    }
+    public String getName() { return name; }
+    public double getPrice() { return price; }
 
     @Override
     public String toString() {

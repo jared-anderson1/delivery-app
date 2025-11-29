@@ -1,82 +1,102 @@
 package deliveryApp.users;
 
-import deliveryApp.managers.DriverManager;
-import deliveryApp.managers.MenuManager;
-import deliveryApp.managers.OrderManager;
-import deliveryApp.managers.UserManager;
+import deliveryApp.core.DeliverySystem;
 import deliveryApp.orders.Order;
 
-import java.util.Optional;
+import java.util.Scanner;
 
 /**
- * Admin class for performing manual operations on the system.
- * It delegates the actual work to the respective manager classes.
+ * Admin user who can manage menu items and view all orders.
+ * Updated with safe input handling to prevent input mismatch errors.
  */
 public class Admin extends User {
 
-    private final UserManager userManager;
-    private final DriverManager driverManager;
-    private final OrderManager orderManager;
-    private final MenuManager menuManager;
-
-    public Admin(String name, String password, UserManager userManager, DriverManager driverManager, OrderManager orderManager, MenuManager menuManager) {
-        super(name, password);
-        this.userManager = userManager;
-        this.driverManager = driverManager;
-        this.orderManager = orderManager;
-        this.menuManager = menuManager;
-
-        // The admin should also be in the user manager
-        userManager.addUser(this);
+    public Admin(String username, String pw, String name,
+                 String phone, String email) {
+        super(username, pw, name, phone, email);
     }
 
-    // --- Manual User Operations ---
+    @Override
+    public void showMenu(DeliverySystem system) {
+        Scanner in = new Scanner(System.in);
 
-    public void suspendUser(String username) {
-        Optional<User> userOpt = userManager.findUser(username);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.setSuspended(true);
-            userManager.updateUser(user); // Save the change
-            System.out.println("User '" + username + "' has been suspended.");
-        } else {
-            System.out.println("User '" + username + "' not found.");
+        while (true) {
+            System.out.println("\n--- ADMIN MENU ---");
+            System.out.println("1. View All Orders");
+            System.out.println("2. Add Menu Item");
+            System.out.println("3. Remove Menu Item");
+            System.out.println("4. Logout");
+            System.out.print("Choice: ");
+
+            int choice = getIntInput(in);
+
+            if (choice == 1) {
+                viewAllOrders(system);
+            } else if (choice == 2) {
+                addMenuItem(system, in);
+            } else if (choice == 3) {
+                removeMenuItem(system, in);
+            } else if (choice == 4) {
+                break;  // Logout
+            } else {
+                System.out.println("Invalid choice.");
+            }
         }
     }
 
-    public void resumeUser(String username) {
-        Optional<User> userOpt = userManager.findUser(username);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.setSuspended(false);
-            userManager.updateUser(user); // Save the change
-            System.out.println("User '" + username + "' has been resumed.");
-        } else {
-            System.out.println("User '" + username + "' not found.");
+    /**
+     * Displays all orders in the system.
+     */
+    private void viewAllOrders(DeliverySystem system) {
+        for (Order o : system.getAllOrders()) {
+            System.out.println(o);
         }
     }
 
-    public void viewAllUsers() {
-        System.out.println("All Users:");
-        userManager.getAllUsers().forEach(System.out::println);
+    /**
+     * Add a new item to the menu.
+     */
+    private void addMenuItem(DeliverySystem system, Scanner in) {
+        System.out.print("Item name: ");
+        String name = in.nextLine();
+
+        System.out.print("Price: ");
+        double price = getDoubleInput(in);
+
+        system.addMenuItem(name, price);
+        System.out.println("Added!");
     }
 
-    // --- Manual Driver and Order Operations (using placeholder managers) ---
+    /**
+     * Allows admin to remove a menu item.
+     */
+    private void removeMenuItem(DeliverySystem system, Scanner in) {
+        System.out.print("Item name: ");
+        String name = in.nextLine();
 
-    public void assignOrderToDriver(Order order, Driver driver) {
-        // This would be implemented using OrderManager and DriverManager
-        System.out.println("Assigning order to driver (not yet implemented).");
+        system.removeMenuItem(name);
+        System.out.println("Item removed.");
     }
 
-    public void viewAvailableDrivers() {
-        System.out.println("Available Drivers:");
-        // driverManager.getAvailableDrivers().forEach(System.out::println);
-        System.out.println("(Not yet implemented)");
+    private int getIntInput(Scanner in) {
+        while (true) {
+            String input = in.nextLine();
+            try {
+                return Integer.parseInt(input.trim());
+            } catch (Exception e) {
+                System.out.print("Please enter a NUMBER: ");
+            }
+        }
     }
 
-    public void viewAllOrders() {
-        System.out.println("All Orders:");
-        // orderManager.getAllOrders().forEach(System.out::println);
-        System.out.println("(Not yet implemented)");
+    private double getDoubleInput(Scanner in) {
+        while (true) {
+            String input = in.nextLine();
+            try {
+                return Double.parseDouble(input.trim());
+            } catch (Exception e) {
+                System.out.print("Please enter a VALID PRICE (e.g. 5.99): ");
+            }
+        }
     }
 }

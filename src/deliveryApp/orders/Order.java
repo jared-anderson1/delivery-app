@@ -1,30 +1,32 @@
 package deliveryApp.orders;
 
+import deliveryApp.menu.MenuItem;
 import deliveryApp.users.Customer;
 import deliveryApp.users.Driver;
-import deliveryApp.menu.MenuItem;
-import deliveryApp.orders.OrderStatus;
+
 import java.util.List;
 
+/**
+ * Represents a customer's order containing selected menu items,
+ * an assigned driver, and a status.
+ */
 public class Order {
-    private Customer customer;
+
+    private final int orderId;
+    private final Customer customer;
     private Driver driver;
-    private List<MenuItem> items;
+    private final List<MenuItem> items;
     private OrderStatus status;
 
-    public Order(Customer customer, List<MenuItem> items, Driver driver) {
-        this.customer = customer;
+    public Order(int id, Customer c, List<MenuItem> items) {
+        this.orderId = id;
+        this.customer = c;
         this.items = items;
-        this.driver = driver;
         this.status = OrderStatus.PLACED;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
+    public int getOrderId() {
+        return orderId;
     }
 
     public Customer getCustomer() {
@@ -35,34 +37,39 @@ public class Order {
         return driver;
     }
 
-    public void assignDriver( Driver driver) {
-        this.driver = driver;
+    /**
+     * Assigns a driver to the order and marks it accepted.
+     */
+    public void assignDriver(Driver d) {
+        this.driver = d;
         this.status = OrderStatus.ACCEPTED;
-        driver.setAvailable(false);
+        d.setAvailable(false);
     }
 
-    public void updateStatus(OrderStatus newStatus) {
-        this.status = newStatus;
-        if(newStatus == OrderStatus.DELIVERED && driver != null) {
-            driver.setAvailable(true);
-        }
+    /**
+     * Updates the order status (e.g. delivered, in-progress).
+     */
+    public void updateStatus(OrderStatus st) {
+        this.status = st;
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Returns total price of the order.
+     */
     public double totalPrice() {
-        double total = 0;
-        for (MenuItem item : items) {
-            total += item.getPrice();
-        }
-        return total;
+        return items.stream().mapToDouble(MenuItem::getPrice).sum();
     }
 
     @Override
     public String toString() {
-        String driverName = (driver != null) ? driver.getName() : "Assigning a driver";
-        return "Customer: " + customer.getName() +
-                "\nDriver: " + driverName +
+        return "\nOrder #" + orderId +
+                "\nCustomer: " + customer.getName() +
+                "\nDriver: " + (driver == null ? "Unassigned" : driver.getName()) +
                 "\nStatus: " + status +
-                "\nTotal: $" + String.format("$2f", totalPrice());
+                "\nTotal: $" + String.format("%.2f", totalPrice());
     }
-
 }

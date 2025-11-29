@@ -1,20 +1,44 @@
 package deliveryApp.utils;
 
-import deliveryApp.users.*;
-import deliveryApp.orders.*;
-import deliveryApp.menu.*;
-import java.util.*;
+import deliveryApp.core.DeliverySystem;
+import deliveryApp.users.User;
 
+import java.util.Scanner;
+
+/**
+ * Entry point for the delivery system application.
+ * Updated with safe input handling to prevent crashes.
+ */
 public class Main {
+
     public static void main(String[] args) {
-        // Create a new User instance
-        User user = new User("test", "test");
 
-        System.out.println("Welcome, " + user.getName() + "!");
+        DeliverySystem system = new DeliverySystem();
+        Scanner in = new Scanner(System.in);
 
-        // Start the ordering process
-        user.placeOrder();
+        System.out.println("=== DELIVERY APP ===");
 
-        System.out.println("\nThank you for your order!");
+        while (true) {
+            try {
+                System.out.print("\nUsername: ");
+                String username = in.nextLine().trim();
+
+                System.out.print("Password: ");
+                String password = in.nextLine().trim();
+
+                User user = system.login(username, password);
+
+                if (user == null) {
+                    System.out.println("Invalid login. Please try again.");
+                    continue;
+                }
+
+                // Launch user-specific dashboard
+                user.showMenu(system);
+
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred. Please try again.");
+            }
+        }
     }
 }
