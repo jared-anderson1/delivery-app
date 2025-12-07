@@ -1,0 +1,3 @@
+Hamburger,5.99
+Fries,3.0
+Drink,1.5

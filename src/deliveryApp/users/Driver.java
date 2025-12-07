@@ -11,7 +11,8 @@ import java.util.Scanner;
 /**
  * Represents a delivery driver.
  * Includes a dashboard for managing assigned orders.
- * Now uses safe input parsing to prevent input mismatch crashes.
+ * Uses safe input parsing to prevent input mismatch crashes,
+ * and provides helpers for saving/loading ratings to/from files.
  */
 public class Driver extends User {
 
@@ -51,6 +52,37 @@ public class Driver extends User {
         averageRating = ratings.isEmpty() ? 0 : sum / ratings.size();
     }
 
+    /**
+     * Returns ratings as a semicolon-separated string (e.g. "5;4;3")
+     * so they can be written to drivers.txt.
+     */
+    public String getRatingsData() {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (int r : ratings) {
+            if (!first) sb.append(";");
+            sb.append(r);
+            first = false;
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Loads ratings from a semicolon-separated string (e.g. "5;4;3")
+     * when reading from drivers.txt.
+     */
+    public void loadRatingsFromString(String data) {
+        if (data == null || data.isBlank()) return;
+        String[] parts = data.split(";");
+        for (String p : parts) {
+            try {
+                int r = Integer.parseInt(p.trim());
+                addRating(r);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+    }
+
     @Override
     public void showMenu(DeliverySystem system) {
         Scanner in = new Scanner(System.in);
@@ -63,7 +95,7 @@ public class Driver extends User {
             System.out.println("4. Logout");
             System.out.print("Choice: ");
 
-            int c = getIntInput(in);   // <-- SAFE INPUT
+            int c = getIntInput(in);   // SAFE INPUT
 
             if (c == 1) {
                 showAssignedOrders(system);
@@ -114,7 +146,7 @@ public class Driver extends User {
         }
 
         System.out.print("Enter Order ID: ");
-        int id = getIntInput(in);  // <-- SAFE INPUT
+        int id = getIntInput(in);  // SAFE INPUT
 
         Order target = null;
         for (Order o : system.getAllOrders()) {

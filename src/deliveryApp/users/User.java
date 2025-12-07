@@ -37,6 +37,20 @@ public abstract class User {
         return name;
     }
 
+    // 🔹 These three getters are required by DeliverySystem.saveUsersToFiles()
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     /**
      * Each user type has its own custom dashboard.
      */
